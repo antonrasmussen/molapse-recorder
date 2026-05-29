@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Document } from '../model/document'
+import type { PartialStroke } from '../render/replay'
 import type { Point, Stroke } from '../model/stroke'
 import {
   buildPoint,
@@ -24,6 +25,11 @@ export interface CanvasStageProps {
   /** Bumped when strokes are added, undone, or cleared. */
   revision: number
   onDocumentChange: () => void
+  /** When set, preview this replay frame instead of the full drawing. */
+  replayStrokes?: PartialStroke[] | null
+  templateSvg?: string
+  templateOpacity?: number
+  onDrawStart?: () => void
 }
 
 type ActiveStroke = Pick<Stroke, 'color' | 'width' | 'points'>
@@ -46,11 +52,17 @@ export function CanvasStage({
   document,
   revision,
   onDocumentChange,
+  replayStrokes = null,
+  templateSvg,
+  templateOpacity = 0.25,
+  onDrawStart,
 }: CanvasStageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const viewportRef = useRef<ViewportState>({ ...DEFAULT_VIEWPORT })
-  const activeStrokeRef = useRef<ActiveStroke | null>(null)
+  const sessionStartMsRef = useRef(performance.now())
   const strokeStartMsRef = useRef(0)
+  const strokeStartTimeRef = useRef(0)
+  const activeStrokeRef = useRef<ActiveStroke | null>(null)
   const activePointerIdRef = useRef<number | null>(null)
   const panningRef = useRef<{
     pointerId: number
@@ -58,6 +70,7 @@ export function CanvasStage({
     lastY: number
   } | null>(null)
   const [, setFrame] = useState(0)
+  const templateImgRef = useRef<HTMLImageElement | null>(null)
   const bump = useCallback(() => setFrame((n) => n + 1), [])
 
   const paint = useCallback(() => {
@@ -72,15 +85,44 @@ export function CanvasStage({
     ctx.save()
     ctx.setTransform(1, 0, 0, 1, 0, 0)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
+    const tmpl = templateImgRef.current
+    if (tmpl) {
+      ctx.save()
+      ctx.globalAlpha = templateOpacity
+      ctx.drawImage(tmpl, 0, 0, canvas.width, canvas.height)
+      ctx.restore()
+    }
     applyViewportToContext(ctx, viewportRef.current)
-    const strokes = document.strokes
+    const strokes =
+      replayStrokes !== null && replayStrokes !== undefined
+        ? replayStrokes
+        : document.strokes
     renderStrokes(ctx, strokes)
     const active = activeStrokeRef.current
     if (active && active.points.length > 0) {
       renderStrokes(ctx, [active])
     }
     ctx.restore()
-  }, [document])
+  }, [document, replayStrokes, templateOpacity])
+
+  useEffect(() => {
+    if (!templateSvg) {
+      templateImgRef.current = null
+      paint()
+      return
+    }
+    const blob = new Blob([templateSvg], { type: 'image/svg+xml' })
+    const url = URL.createObjectURL(blob)
+    const img = new Image()
+    img.onload = () => {
+      templateImgRef.current = img
+      URL.revokeObjectURL(url)
+      paint()
+    }
+    img.onerror = () => URL.revokeObjectURL(url)
+    img.src = url
+    return () => URL.revokeObjectURL(url)
+  }, [templateSvg, paint])
 
   useEffect(() => {
     paint()
@@ -143,6 +185,7 @@ export function CanvasStage({
         tool: 'pen',
         color: active.color,
         width: active.width,
+        startTime: strokeStartTimeRef.current,
         points: active.points as Point[],
       })
       onDocumentChange()
@@ -180,9 +223,12 @@ export function CanvasStage({
       }
 
       e.preventDefault()
+      onDrawStart?.()
       canvas.setPointerCapture(e.pointerId)
       activePointerIdRef.current = e.pointerId
-      strokeStartMsRef.current = performance.now()
+      const now = performance.now()
+      strokeStartMsRef.current = now
+      strokeStartTimeRef.current = now - sessionStartMsRef.current
       activeStrokeRef.current = {
         color,
         width,
@@ -190,7 +236,7 @@ export function CanvasStage({
       }
       appendSamples(samples)
     },
-    [appendSamples, color, stylusOnly, width],
+    [appendSamples, color, onDrawStart, stylusOnly, width],
   )
 
   const onPointerMove = useCallback(

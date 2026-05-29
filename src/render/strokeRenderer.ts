@@ -37,7 +37,7 @@ export function getStrokeOutline(
 }
 
 function drawOutline(
-  ctx: CanvasRenderingContext2D,
+  ctx: RenderContext,
   outline: number[][],
   color: string,
 ): void {
@@ -55,9 +55,13 @@ function drawOutline(
   ctx.fill()
 }
 
+export type RenderContext =
+  | CanvasRenderingContext2D
+  | OffscreenCanvasRenderingContext2D
+
 /** Draw one stroke in world coordinates (apply viewport on the context first). */
 export function renderStroke(
-  ctx: CanvasRenderingContext2D,
+  ctx: RenderContext,
   stroke: Pick<Stroke, 'color' | 'width' | 'points'>,
 ): void {
   if (stroke.points.length === 0) {
@@ -69,7 +73,7 @@ export function renderStroke(
 
 /** Draw all strokes in world space. */
 export function renderStrokes(
-  ctx: CanvasRenderingContext2D,
+  ctx: RenderContext,
   strokes: readonly Pick<Stroke, 'color' | 'width' | 'points'>[],
 ): void {
   for (const stroke of strokes) {

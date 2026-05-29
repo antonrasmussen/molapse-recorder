@@ -1,8 +1,6 @@
 # Molapse Recorder
 
-Local-first vector stroke recorder for scientific drawings. Record stylus strokes as structured data (not pixels), then replay and export high-resolution transparent timelapses for video editors.
-
-**Status:** Phase 0–1 (capture core). Persistence, replay export, and alpha video encoders are not implemented yet.
+Local-first **vector stroke recorder** for scientific drawings. Record stylus strokes as structured data (not pixels), then replay and export high-resolution transparent timelapses for video editors.
 
 ## Quick start
 
@@ -11,7 +9,18 @@ npm install
 npm run dev
 ```
 
-Open the URL shown in the terminal. Draw with mouse or stylus; enable **Stylus only** to ignore touch/palm input.
+See [docs/quickstart.md](docs/quickstart.md) for the full workflow.
+
+## Features
+
+- Pointer Events with **stylus-only / palm rejection**
+- World-space strokes with pressure and timestamps
+- **Save/load** `project.json`
+- **Replay** with scrub and play
+- **Export** transparent PNG sequences (1080p / 4K)
+- Optional **MP4 preview** (WebCodecs or FFmpeg)
+- Optional local **[encoder](encoder/README.md)** for ProRes 4444 / WebM alpha
+- Optional **[SMILES → SVG template](templates/README.md)** for trace-over drawing
 
 ## Scripts
 
@@ -21,6 +30,7 @@ Open the URL shown in the terminal. Draw with mouse or stylus; enable **Stylus o
 | `npm run build` | Production build |
 | `npm test` | Unit tests (Vitest) |
 | `npm run test:e2e` | E2E tests (Playwright) |
+| `npm run encode -- --frames ./path/frames --name demo` | FFmpeg encoder CLI |
 
 ## Prior art
 

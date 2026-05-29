@@ -1,0 +1,16 @@
+{
+  "name": "Molapse Recorder",
+  "short_name": "Molapse",
+  "description": "Vector stroke recorder for transparent scientific drawing timelapses",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a1e",
+  "theme_color": "#222228",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "canvas": {
+    "worldWidth": 1920,
+    "worldHeight": 1080,
+    "background": "transparent"
+  },
+  "strokes": [
+    {
+      "id": "stroke-1",
+      "tool": "pen",
+      "color": "#ffffff",
+      "width": 4,
+      "startTime": 0,
+      "points": [
+        { "x": 100, "y": 100, "t": 0, "pressure": 0.5 },
+        { "x": 200, "y": 150, "t": 200, "pressure": 0.6 },
+        { "x": 300, "y": 100, "t": 400, "pressure": 0.5 }
+      ]
+    }
+  ],
+  "createdAt": "2026-05-28T00:00:00Z"
+}

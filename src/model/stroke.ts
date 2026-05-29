@@ -15,6 +15,8 @@ export interface Stroke {
   tool: StrokeTool
   color: string
   width: number
+  /** Ms from session start when this stroke began (for replay timeline). */
+  startTime: number
   points: Point[]
 }
 

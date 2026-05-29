@@ -1,7 +1,7 @@
 {
   "name": "molapse-recorder",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,9 +10,11 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "encode": "node encoder/cli.mjs"
   },
   "dependencies": {
+    "jszip": "^3.10.1",
     "perfect-freehand": "^1.2.3",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"

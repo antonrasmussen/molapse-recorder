@@ -18,6 +18,7 @@ export class Document {
       tool: stroke.tool,
       color: stroke.color,
       width: stroke.width,
+      startTime: stroke.startTime,
       points: [...stroke.points],
     }
     this._strokes.push(complete)
