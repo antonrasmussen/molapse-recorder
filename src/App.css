@@ -1,0 +1,86 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #1a1a1e;
+  color: #e8e8ec;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #333;
+  background: #222228;
+}
+
+.toolbar__field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.toolbar__checkbox {
+  cursor: pointer;
+}
+
+.toolbar__value {
+  min-width: 2.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.toolbar button {
+  padding: 0.4rem 0.85rem;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background: #2e2e36;
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.toolbar button:hover:not(:disabled) {
+  background: #3a3a44;
+}
+
+.toolbar button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.canvas-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0.5rem 1rem 1rem;
+}
+
+.canvas-stage__canvas {
+  flex: 1;
+  width: 100%;
+  min-height: 200px;
+  border-radius: 8px;
+  background: transparent;
+  background-image:
+    linear-gradient(45deg, #2a2a30 25%, transparent 25%),
+    linear-gradient(-45deg, #2a2a30 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #2a2a30 75%),
+    linear-gradient(-45deg, transparent 75%, #2a2a30 75%);
+  background-size: 16px 16px;
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0;
+  cursor: crosshair;
+}
+
+.canvas-stage__hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  color: #888;
+}
